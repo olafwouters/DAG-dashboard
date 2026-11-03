@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Build lowercase entry point with embedded catalogue
         run: python3 scripts/build_pages.py
+      - name: Apply planner preferences
+        run: python3 scripts/customize_pages.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload published site only
