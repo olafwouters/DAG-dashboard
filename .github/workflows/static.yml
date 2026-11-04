@@ -33,10 +33,6 @@ jobs:
         run: python3 scripts/add_status_board.py
       - name: Enable shared Supabase planner
         run: python3 scripts/enable_supabase.py
-      - name: Apply shared-first workspace styling
-        run: python3 scripts/polish_workspace.py
-      - name: Stabilise shared refreshes and popup editing
-        run: python3 scripts/stabilize_shared_reads.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload published site only
