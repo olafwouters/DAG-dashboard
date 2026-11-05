@@ -1,6 +1,5 @@
 """Enable authenticated Supabase saving on the already-built Pages application."""
 from pathlib import Path
-import shutil
 
 path = Path("_site/index.html")
 html = path.read_text(encoding="utf-8")
@@ -17,6 +16,10 @@ html = html.replace("Huidige werkruimte vervangen door deze back-up", "Gedeelde 
 html = html.replace("Alle plannerinvoer en eigen catalogusrecords verwijderen?", "Alle gedeelde plannerinvoer voor alle gebruikers en eigen catalogusrecords verwijderen?")
 html = html.replace("Activiteit opgeslagen; dashboard bijgewerkt.", "Activiteit lokaal bijgewerkt; gedeelde opslag wordt gecontroleerd.")
 html = html.replace("</body>", '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./shared-planner.js"></script></body>', 1)
-shutil.copyfile("web/shared-planner.js", "_site/shared-planner.js")
+shared=Path('web/shared-planner.js').read_text(encoding='utf-8')
+old="const c={...blank(),...values,status:Number(el('editStatus').value)};"
+new="const c={...cell({id:edit.id},edit.b),...blank(),...values,status:Number(el('editStatus').value)};"
+if shared.count(old)!=1:raise ValueError('Unexpected shared activity capture handler')
+Path('_site/shared-planner.js').write_text(shared.replace(old,new,1),encoding='utf-8')
 path.write_text(html, encoding="utf-8")
-print("Enabled Supabase sign-in and shared saving; SQL setup and approved accounts are required")
+print("Enabled Supabase sign-in and shared saving; activity extensions are preserved")
