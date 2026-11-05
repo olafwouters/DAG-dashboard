@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict');
+require('../web/status-board.js');
+const M=globalThis.DAGTrajectories,s=M.empty(),t=M.create(s,{entityId:'P1',request:'Curriculumvraag',owner:'Olaf'});
+assert.equal(M.phases.length,5);assert(M.attention(s,t,'2026-11-05').includes('Volgende actie ontbreekt'));
+const task=M.addTask(s,t,{text:'Bespreekt uitkomsten',owner:'Olaf',due:'2026-11-12',next:true});assert.equal(M.next(s,t).id,task);
+const a=M.addExecution(s,t,'selfscan'),b=M.addExecution(s,t,'professionalisation');M.updateExecution(s,a,{stepIndex:2});M.updateExecution(s,b,{stepIndex:1});assert.strictEqual(M.executions(s,t)[0],s.executions[a]);assert.equal(s.executions[a].steps[2],'Analyse');assert.equal(s.executions[b].steps[1],'Ontwerp');
+M.updateExecution(s,a,{stepIndex:4});assert.equal(s.trajectories[t].phase,'request');assert(!M.suggestFollowup(s,t));M.updateExecution(s,b,{stepIndex:5});assert(M.suggestFollowup(s,t));assert.equal(s.trajectories[t].phase,'request');
+const template=JSON.stringify(s.templates.selfscan);M.customiseSteps(s,a,['Intake','Eigen analyse','Gereed']);assert.equal(JSON.stringify(s.templates.selfscan),template);assert(M.done(s.executions[a]));const c=M.addExecution(s,t,'selfscan');assert.equal(s.executions[c].steps[2],'Analyse');
+M.update(s,t,{phase:'delivery',condition:'waiting',waitReason:'Reactie manager',reviewDate:'2026-11-10'});assert.equal(s.trajectories[t].phase,'delivery');assert(M.attention(s,t,'2026-11-10').includes('Opnieuw bekijken'));M.updateExecution(s,c,{due:'2026-11-01'});assert(M.attention(s,t,'2026-11-05').includes('Deadline verstreken'));assert.equal(s.trajectories[t].phase,'delivery');
+M.completeTask(s,task);assert.equal(M.next(s,t),null);M.addContact(s,t,{date:'2026-11-05',note:'Vervolg afgesproken',executionId:a});assert.equal(M.contacts(s,t)[0].executionId,a);
+const other=M.create(s,{entityId:'P2',request:'Andere vraag'});assert.throws(()=>M.addTask(s,other,{text:'Ongeldig',executionId:a}));assert.throws(()=>M.addContact(s,other,{date:'2026-11-05',note:'Ongeldig',executionId:a}));assert.throws(()=>M.get(s,'constructor'));
+const fingerprint=M.detailVersion(s,t);M.updateExecution(s,a,{owner:'Vincent'});assert.notEqual(M.detailVersion(s,t),fingerprint);const stable=M.detailVersion(s,t);M.addContact(s,other,{date:'2026-11-05',note:'Ander traject'});assert.equal(M.detailVersion(s,t),stable);
+assert.throws(()=>M.update(s,t,{phase:'closed'}));M.update(s,t,{phase:'closed',closure:'not_continued'});M.update(s,other,{phase:'closed',closure:'completed'});assert.deepEqual(M.report(s),{open:0,completed:1,notContinued:1});assert(M.validate(JSON.parse(JSON.stringify(s))));
+const legacy={schemaVersion:2,programs:[],buckets:[],cells:{P1:{0:{status:2,title:'Bestaande activiteit'}}}},before=JSON.stringify(legacy.cells);legacy.trajectoryData=s;assert.equal(JSON.stringify(legacy.cells),before);
+console.log('PASS: model relationships, steps, template isolation, next action, waiting, overdue, follow-up, separate outcomes, conflict fingerprint, reference validation and preservation of legacy cells.');
