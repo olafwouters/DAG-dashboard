@@ -1,0 +1,7 @@
+const assert=require('node:assert/strict');
+require('../web/trajectory-controls.js');
+const M=globalThis.DAGTrajectoryUI,s={programs:[{id:'P1'}],cells:{P1:{0:{status:2,owner:'Olaf',notes:'Behouden'}}},programmeTrajectories:{P1:{phase:'0',condition:'waiting',waitReason:'Manager',owner:'Olaf',action:'Bestaande vrije tekst'}}},before=JSON.stringify(s.cells);
+const moved=M.phasePlan(s,'P1','1');assert.equal(moved.phase,'1');assert.equal(moved.condition,'waiting');assert.equal(moved.action,'Bestaande vrije tekst');assert.equal(s.programmeTrajectories.P1.phase,'0');assert.equal(JSON.stringify(s.cells),before);
+assert.throws(()=>M.phasePlan(s,'P1','4'));s.programmeTrajectories.P1.closure='not_continued';assert.throws(()=>M.phasePlan(s,'P1','4'));s.programmeTrajectories.P1.closureNote='Verkeerde opleiding gekozen';assert.equal(M.phasePlan(s,'P1','4').closure,'not_continued');assert.equal(M.phasePlan(s,'P1','2').closure,'');assert.throws(()=>M.phasePlan(s,'P1','9'));
+const removed=M.deletionPlan(s,'P1');assert(!('P1'in removed.metadata));assert.equal(removed.hidden.P1,true);assert.equal(JSON.stringify(s.cells),before);assert('P1'in s.programmeTrajectories);s.hiddenProgrammeTrajectories=removed.hidden;assert.throws(()=>M.phasePlan(s,'P1','1'));
+console.log('PASS: phase changes preserve activities and context; closure requires outcome and reason; deletion hides the card without deleting Planner records.');
