@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: "22"
       - name: Test read-only reporting and PDF generation
-        run: node tests/reporting-dashboard.cjs && node tests/reporting-profiles.cjs && node tests/reporting-buckets.cjs
+        run: node tests/reporting-dashboard.cjs && node tests/reporting-profiles.cjs && node tests/bucket-projects.cjs && node tests/reporting-buckets.cjs
       - name: Build lowercase entry point with embedded catalogue
         run: python3 scripts/build_pages.py
       - name: Apply planner preferences
@@ -43,6 +43,8 @@ jobs:
         run: python3 scripts/compact_header.py
       - name: Add native bucket colour circles only
         run: python3 scripts/add_bucket_colours.py
+      - name: Add bucket sub-projects and recoverable trash
+        run: python3 scripts/add_bucket_projects.py
       - name: Apply DAG Dashboard Liquid Lens theme
         run: python3 scripts/apply_liquid_lens.py
       - name: Add aggregated dashboard and PDF export
