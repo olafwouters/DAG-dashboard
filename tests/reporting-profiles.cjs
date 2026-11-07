@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');require('../web/reporting-profiles.js');const R=globalThis.DAGReportProfiles;
+const s={programs:[{id:'P',cluster:'Cluster A'},{id:'O',cluster:'Support',type:'organisation'}],buckets:[{id:10,name:'Gesprek met directie'},{id:20,name:'Zelfscan DAG'},{id:30,name:'Maatwerk'}],cells:{P:{10:{status:3,owner:'PRIVE',notes:'PRIVE'},20:{status:2},30:{status:1}},O:{10:{status:2}}}},before=JSON.stringify(s);
+assert.equal(R.aggregate(s).work[0].counts[3],0);assert.equal(JSON.stringify(s),before);
+s.reportingSettings=R.validate(s,[[10],[20],[],[30]]);let a=R.aggregate(s);assert.equal(a.work[0].counts[3],1);assert.equal(a.total,3);assert.equal(a.programmes,1);assert.equal(a.work[2].buckets.length,0);assert.equal(R.aggregate(s,'organisation').total,1);
+s.buckets[0].name='Hernoemd';assert.equal(R.aggregate(s).work[0].counts[3],1);
+s.reportingSettings=R.validate(s,[[10,10],[10,20],[],[30]]);a=R.aggregate(s);assert.equal(a.total,3);assert.equal(a.counts[3],1);assert.equal(a.overlaps,1);assert.equal(a.work.reduce((n,w)=>n+w.counts.reduce((s,v)=>s+v,0),0),4);assert.equal(a.rows[0].counts.reduce((s,n)=>s+n,0),3);
+assert.throws(()=>R.validate(s,[[99],[],[],[]]));assert.throws(()=>R.validate(s,[['10'],[],[],[]]));assert.equal(R.aggregate(JSON.parse(JSON.stringify(s))).total,3);
+assert(R.render(a,'organisatie','programme').includes('Bereik binnen de geregistreerde scope'));assert(!R.render(a,'organisatie','programme').includes('<table>'));assert(R.render(a,'bestuur','programme').includes('Cluster × werkstroom'));assert(!R.render(a,'extern','programme').includes('PRIVE'));assert(R.render(a,'extern','programme').includes('Afgeronde uitvoering per werkstroom'));
+s.reportingSettings=R.validate(s,[[],[],[],[]]);assert.equal(R.aggregate(s).total,0);assert(R.config({...s,reportingSettings:{version:9}}).error);
+console.log('PASS: explicit ID mappings; renamed buckets; empty selections; no double counting across graphs; scope filters; persistent JSON settings; three distinct audience layouts.');

@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: "22"
       - name: Test read-only reporting and PDF generation
-        run: node tests/reporting-dashboard.cjs
+        run: node tests/reporting-dashboard.cjs && node tests/reporting-profiles.cjs
       - name: Build lowercase entry point with embedded catalogue
         run: python3 scripts/build_pages.py
       - name: Apply planner preferences
