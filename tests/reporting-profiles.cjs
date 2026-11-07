@@ -8,3 +8,10 @@ assert.throws(()=>R.validate(s,[[99],[],[],[]]));assert.throws(()=>R.validate(s,
 assert(R.render(a,'organisatie','programme').includes('Bereik binnen de geregistreerde scope'));assert(!R.render(a,'organisatie','programme').includes('<table>'));assert(R.render(a,'bestuur','programme').includes('Cluster × werkstroom'));assert(!R.render(a,'extern','programme').includes('PRIVE'));assert(R.render(a,'extern','programme').includes('Afgeronde uitvoering per werkstroom'));
 s.reportingSettings=R.validate(s,[[],[],[],[]]);assert.equal(R.aggregate(s).total,0);assert(R.config({...s,reportingSettings:{version:9}}).error);
 console.log('PASS: explicit ID mappings; renamed buckets; empty selections; no double counting across graphs; scope filters; persistent JSON settings; three distinct audience layouts.');
+
+require('../web/reporting-charts.js');const C=globalThis.DAGReportingCharts;
+const chartData={counts:[1,2,3,4],total:10,programmes:3,work:['Managementgesprek','Zelfscan','Curriculum Atlas','Professionalisering'].map(name=>({name,counts:[0,1,1,2],programmes:2,buckets:['Gekoppeld']}))},snapshot=JSON.stringify(chartData);
+const orgCharts=C.models(chartData,'organisatie'),boardCharts=C.models(chartData,'bestuur'),publicCharts=C.models(chartData,'extern');assert.equal(orgCharts.length,4);assert.equal(boardCharts.length,1);assert.equal(boardCharts[0].values.reduce((s,n)=>s+n,0),10);assert.deepEqual(publicCharts[0].values,[4,6]);assert.equal(publicCharts[0].center,4);
+for(const model of [...orgCharts,...boardCharts,...publicCharts]){const svg=C.ring(model);assert(svg.includes('<svg'));assert(!/NaN|Infinity/.test(svg));}assert.equal(JSON.stringify(chartData),snapshot);
+const empty=C.models({counts:[0,0,0,0],work:[]},'bestuur')[0];assert(C.ring(empty).includes('geen registraties'));assert(!/NaN|Infinity/.test(C.ring(empty)));assert(!C.ring({...empty,title:'<script>bad</script>'}).includes('<script>'));
+console.log('PASS: four workstream donuts; unique-total governance donut; public completion donut; empty states; safe SVG; no aggregation mutations.');
