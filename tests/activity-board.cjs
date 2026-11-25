@@ -25,15 +25,18 @@ test('follow-up defaults open, explicit close/reopen moves the same activity',()
 test('filters remove empty containers and N.v.t. is separately visible',()=>{const t=setup();t.s.cells.P[0].status=4;assert(!t.api.view(t.s,['P']).some(l=>l.column.id==='not-applicable'));assert.equal(lane(t.api.view(t.s,['P'],{na:true}),'not-applicable').containers.length,1);assert(t.api.view(t.s,['P'],{bucket:99}).every(l=>!l.containers.length));assert(t.api.view(t.s,['P'],{owner:'Onbekend'}).every(l=>!l.containers.length));});
 
 test('board renders and drag/drop moves only the selected activity',()=>{
- const t=setup(),handlers={},parent={style:{},lastChild:{}};
+ const t=setup(),handlers={},parent={style:{},lastChild:{}},styles=[];
  const host={innerHTML:'',addEventListener:(name,fn)=>handlers[name]=fn};
  const node=(value='',checked=false)=>({value,checked,closest:()=>parent});
  const nodes={statusBoard:host,boardEmpty:node(),boardNA:node(),boardBucket:node(),ownerFilter:node(),boardAttention:node(),boardCount:{},statusboard:{querySelector:()=>({})}};
- Object.assign(t.context,{state:t.s,today:()=> '2026-11-25',isOver:()=>false,visible:()=>t.s.programs,save:t.h.save,render:()=>t.api.render(t.s.programs),toast:()=>{},document:{getElementById:id=>nodes[id],querySelector:()=>null,documentElement:{classList:{contains:()=>true}}}});
+ Object.assign(t.context,{state:t.s,today:()=> '2026-11-25',isOver:()=>false,visible:()=>t.s.programs,save:t.h.save,render:()=>t.api.render(t.s.programs),toast:()=>{},document:{createElement:tag=>({tagName:tag.toUpperCase(),textContent:''}),head:{append:element=>styles.push(element)},getElementById:id=>nodes[id],querySelector:()=>null,documentElement:{classList:{contains:()=>true}}}});
  t.api.render(t.s.programs);assert(host.innerHTML.includes('data-activity-column="agreement"'));assert(!host.innerHTML.includes('data-trajectory-id'));assert(nodes.boardCount.textContent.includes('1 unieke'));
+ assert.equal(styles.length,1);assert.equal(styles[0].tagName,'STYLE');assert(styles[0].textContent.includes('#statusBoard .board-card'));
+ assert(host.innerHTML.includes('class="board-kind">Opleiding'));assert(host.innerHTML.includes('class="activity-kind">Activiteit'));assert(host.innerHTML.includes('class="activity-grip"'));
  const item={dataset:{activityKey:JSON.stringify(['P',0])}},transfer={setData:()=>{}};
  handlers.dragstart({target:{closest:s=>s==='[data-activity-key]'?item:null},dataTransfer:transfer,preventDefault:()=>{}});
  handlers.drop({target:{closest:()=>({dataset:{activityColumn:'delivery'}})},preventDefault:()=>{}});
  assert.equal(t.s.cells.P[0].status,2);assert.equal(t.s.cells.P[1].status,1);
- assert.equal(t.counts().saved,1);assert(host.innerHTML.includes('data-activity-column="delivery"'));
+ assert.equal(t.counts().saved,1);assert(host.innerHTML.includes('data-activity-column="delivery"'));assert.equal(styles.length,1);
+ t.s.programs[0].type='organisation';t.api.render(t.s.programs);assert(host.innerHTML.includes('class="board-kind">Organisatieonderdeel'));assert.equal(styles.length,1);
 });
