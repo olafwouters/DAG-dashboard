@@ -29,3 +29,16 @@ Path('_site/shared-planner.js').write_text(shared,encoding='utf-8')
 Path('_site/follow-up-editor.js').write_text(Path('web/follow-up-editor.js').read_text(encoding='utf-8'),encoding='utf-8')
 path.write_text(html, encoding="utf-8")
 print("Enabled Supabase sign-in and shared saving; activity extensions and follow-up are preserved")
+
+# Load the shared labels before the template's first render; only patch Planner cells.
+start=html.index('function renderPlanner(')
+end=html.index('\nfunction ',start+1)
+planner=html[start:end]
+if planner.count('STATUS[c.status]')!=2:raise ValueError('Unexpected Planner cell labels')
+planner=planner.replace('STATUS[c.status]', 'DAGPlannerLabels.label(state.cells[p.id]?.[b])')
+html=html[:start]+planner+html[end:]
+html=html.replace('</head>', '<script src="./status-columns.js"></script><script src="./planner-labels.js"></script></head>',1)
+html=html.replace('<script src="./follow-up-editor.js">', '<script>DAGPlannerLabels.install();</script><script src="./follow-up-editor.js">',1)
+for name in ['status-columns.js','planner-labels.js']:
+    Path('_site/'+name).write_text(Path('web/'+name).read_text(encoding='utf-8'),encoding='utf-8')
+path.write_text(html,encoding='utf-8')
