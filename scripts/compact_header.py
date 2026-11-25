@@ -15,8 +15,13 @@ css = Path("web/header-information.css").read_text(encoding="utf-8")
 css += "\n" + Path("web/workflow.css").read_text(encoding="utf-8")
 html = html.replace("</head>", "<style>" + css + "</style></head>", 1)
 scripts = ("header-information.js", "activity-editor-ui.js", "banner-scene.js", "banner-layout.js")
-html = html.replace("</body>", ''.join(f'<script src="./{name}"></script>' for name in scripts) + "</body>", 1)
+deferred = {"banner-scene.js", "banner-layout.js"}
+script_tags = ''.join(
+    f'<script src="./{name}"' + (' defer' if name in deferred else '') + '></script>'
+    for name in scripts
+)
+html = html.replace("</body>", script_tags + "</body>", 1)
 for name in scripts:
     shutil.copyfile("web/" + name, "_site/" + name)
 path.write_text(html, encoding="utf-8")
-print("Applied header layout, workflow flowchart, activity editor and full-width banner scene; shared saving code unchanged")
+print("Applied header layout, workflow flowchart, activity editor and deferred banner scene; shared saving code unchanged")
