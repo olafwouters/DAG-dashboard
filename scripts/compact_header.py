@@ -8,7 +8,7 @@ html = path.read_text(encoding="utf-8")
 if html.count("</head>") != 1 or html.count("</body>") != 1:
     raise ValueError("Unexpected HTML structure")
 workflow = Path("web/workflow.html").read_text(encoding="utf-8")
-html, count = re.subn(r'<section id="help"\b[^>]*>[\s\S]*?</section>', lambda match: workflow, html)
+html, count = re.subn(r'<section id="help"(?=\s|>)[^>]*>[\s\S]*?</section>', lambda match: workflow, html)
 if count != 1:
     raise ValueError("Expected exactly one help section")
 css = Path("web/header-information.css").read_text(encoding="utf-8")
