@@ -1,1 +1,16 @@
 .dag-workflow{max-width:1400px;margin:24px auto;color:var(--navy)}.dag-workflow>p{max-width:85ch}.wf-main{list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:28px;padding:0;margin:28px 0}.wf-main>li{position:relative;padding:20px;background:#edf3ef;border:1px solid #bdcec5;border-top:4px solid #285f63;border-radius:16px;min-width:0}.wf-main>li:not(:last-child):after{content:'→';position:absolute;right:-25px;top:40%;color:#a7592a}.dag-workflow h3{margin:0 0 8px}.dag-workflow p{line-height:1.6}.wf-main>li:last-child{background:#e0eee5}.wf-branches,.wf-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}.wf-branches>section,.wf-tools>section,.wf-trajectory{padding:22px;border:1px solid #e4dcd0;border-radius:18px;background:#fffdf9}.wf-branches>section{border-top:3px solid #d68b47}.wf-arrow{text-align:center;color:#a7592a;line-height:1.8}.wf-trajectory{text-align:center;max-width:800px;margin:28px auto;background:#edf3ef}.wf-outcomes{display:grid;grid-template-columns:1fr 1fr;gap:16px}.wf-outcomes>div{padding:16px;border:1px solid #bdcec5;border-radius:12px;background:#fffdf9}.wf-tools{border-top:1px solid #e4dcd0;padding-top:24px}.dag-workflow a{color:#285f63;text-decoration:underline}@media(max-width:900px){.wf-main{grid-template-columns:1fr;max-width:560px;margin:28px auto;gap:28px}.wf-main>li:not(:last-child):after{content:'↓';right:auto;left:50%;top:auto;bottom:-27px}.wf-branches,.wf-tools{grid-template-columns:1fr}}@media(max-width:420px){.wf-outcomes{grid-template-columns:1fr}}@media print{.dag-workflow section,.wf-main>li{break-inside:avoid}.wf-main{grid-template-columns:1fr}.wf-main>li:not(:last-child):after{content:'↓';right:auto;left:50%;top:auto;bottom:-27px}}
+
+/* Exact shared scale; variable-based sizes avoid the legacy automatic 2pt increment. */
+html:root{--dag-text:12px;--dag-detail:10px;--dag-heading:16px;--dag-card-heading:14px;--dag-popup-heading:20px}
+html body :is(input,select,textarea,button){font-size:var(--dag-text)!important}
+html body main :is(p,li,td,.activity-title,.cellbtn){font-size:var(--dag-text)!important}
+html body main :is(label,.small,.badge,.pmeta,.cellsub,.clustercell,.progressnote,.rc-legend,.rp-note,.rp-warning,.board-kind,.activity-kind){font-size:var(--dag-detail)!important}
+html body #statusBoard :is(.board-programme,.board-lane-head h3),html body #plannerTable :is(.pname,.bucket-name){font-size:var(--dag-card-heading)!important}
+html body main h2{font-size:var(--dag-heading)!important}
+html body dialog{font-size:var(--dag-text)!important}
+html body dialog :is(p,input,select,textarea,button,legend){font-size:var(--dag-text)!important}
+html body dialog :is(label,.small){font-size:var(--dag-detail)!important}
+html body dialog h2{font-size:var(--dag-popup-heading)!important}
+html body #editDialog :is(p,input,select,textarea,button,legend){font-size:var(--dag-text)!important}
+html body #editDialog :is(label,.small,.activity-step-settings>summary){font-size:var(--dag-detail)!important}
+html body #editDialog .dialoghead h2{font-size:var(--dag-popup-heading)!important}
