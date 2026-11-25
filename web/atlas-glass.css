@@ -1,0 +1,22 @@
+body{background:radial-gradient(ellipse at 0% 0%,#cdd5cf 0,transparent 48%),radial-gradient(ellipse at 30% 100%,#e5d8c7 0,transparent 58%),#f5f2ec;color:#303540}
+body .tabs,body .status-controls,body .r-controls,body #filters{background:rgba(255,253,249,.8);border:1px solid rgba(255,255,255,.85);border-radius:20px;box-shadow:0 10px 28px rgba(64,56,40,.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+body button.primary,body .tab.active{background:linear-gradient(145deg,#f5a23e,#ee7f00 55%,#bf601b);color:#fff;border:1px solid #f3b367;box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 4px 12px rgba(196,104,23,.15)}
+body button,body input,body select,body textarea{border-radius:11px}
+body button:focus-visible,body a:focus-visible,body input:focus-visible,body select:focus-visible,body textarea:focus-visible{outline:3px solid #a64c00;outline-offset:3px}
+body dialog{background:#fffdf9;color:#303540;border:1px solid #e4dcd0;border-radius:22px;box-shadow:0 24px 60px rgba(30,46,40,.2)}
+body dialog::backdrop{background:rgba(25,43,39,.35)}
+body #dashboard .rp-panel,body #dashboard .bp-card,body #dashboard .rp-streams section,body #dashboard .r-card{background:rgba(255,253,249,.94);border-color:#e5ded3;border-radius:20px;box-shadow:0 8px 24px rgba(64,56,40,.06)}
+body #statusBoard .board-lane{background:rgba(244,241,233,.88);border-color:#dcded3}
+body #statusBoard .board-card{background:#e9f0e9;border-color:#a9bdb0}
+body #statusBoard .programme-activity{background:#fffdf9}
+body #statusBoard .board-open{border-bottom-color:#bdcfc0}
+.atlas-banner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:24px;isolation:isolate;overflow:hidden;width:100%;box-sizing:border-box;margin:0 0 20px;padding:24px 30px;border:1px solid rgba(255,255,255,.45);border-radius:24px;background:radial-gradient(ellipse at 100% 100%,rgba(211,119,44,.46),transparent 63%),linear-gradient(115deg,#203532,#3c5550);color:#fff;box-shadow:0 12px 30px rgba(29,46,38,.13)}
+.atlas-banner:before{content:'';position:absolute;z-index:-1;right:-60px;top:-100px;width:360px;height:360px;border:1px solid rgba(255,255,255,.13);border-radius:50%;box-shadow:0 0 0 35px rgba(255,255,255,.025),0 0 0 70px rgba(255,255,255,.02)}
+.atlas-banner-copy{min-width:0}.atlas-banner-kicker{display:inline-block;padding:5px 10px;border-radius:20px;background:linear-gradient(120deg,#f6a13a,#c96920);color:#fff;font-size:11px;letter-spacing:.04em}.atlas-banner-title{margin:10px 0 6px;font-size:clamp(23px,3vw,34px);font-weight:700;line-height:1.15}.atlas-banner-copy p{margin:0;color:#f1f3ed;font-size:13px}
+.atlas-banner-art{display:flex;flex-direction:column;align-items:center;gap:5px;flex:0 0 180px}.atlas-laptop{display:block;width:180px;height:auto}.atlas-code{stroke-dasharray:100;stroke-dashoffset:100;animation:atlas-code-write 7s ease-in-out infinite}.atlas-code:nth-of-type(2){animation-delay:.6s}.atlas-code:nth-of-type(3){animation-delay:1.2s}.atlas-code:nth-of-type(4){animation-delay:1.8s}.atlas-cursor{animation:atlas-cursor-blink 1.4s steps(2,end) infinite}.atlas-banner[data-paused=true] .atlas-code,.atlas-banner[data-paused=true] .atlas-cursor{animation-play-state:paused}
+.atlas-banner .atlas-motion{padding:5px 9px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:10px;cursor:pointer}
+@keyframes atlas-code-write{0%,10%{stroke-dashoffset:100}45%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:100}}@keyframes atlas-cursor-blink{50%{opacity:0}}
+@media(max-width:600px){.atlas-banner{padding:20px;gap:12px}.atlas-banner-art{flex-basis:110px}.atlas-laptop{width:110px}.atlas-banner-copy p{font-size:12px}}
+@media(max-width:380px){.atlas-banner{flex-direction:column;align-items:flex-start}.atlas-banner-art{flex-basis:auto;align-self:flex-end}}
+@media(prefers-reduced-motion:reduce){.atlas-banner .atlas-code{animation:none;stroke-dashoffset:0}.atlas-banner .atlas-cursor{animation:none}.atlas-banner .atlas-motion{display:none}}
+@media print{.atlas-banner{display:none}body{background:#fff}}
