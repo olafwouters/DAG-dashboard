@@ -50,6 +50,13 @@ jobs:
         run: python3 scripts/apply_liquid_lens.py
       - name: Add aggregated dashboard and PDF export
         run: python3 scripts/add_reporting_dashboard.py
+      - name: Align Dashboard activity statuses and enlarge charts
+        run: |
+          python3 scripts/align_dashboard_statuses.py
+          node --check _site/reporting-profiles.js
+          node --check _site/reporting-buckets.js
+          node --check _site/reporting-charts.js
+          node --check _site/reporting-dashboard.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload published site only
