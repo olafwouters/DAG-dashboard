@@ -15,11 +15,17 @@ html = html.replace("</head>", style + "</head>", 1)
 html = html.replace("Huidige werkruimte vervangen door deze back-up", "Gedeelde werkruimte voor alle gebruikers vervangen door deze back-up")
 html = html.replace("Alle plannerinvoer en eigen catalogusrecords verwijderen?", "Alle gedeelde plannerinvoer voor alle gebruikers en eigen catalogusrecords verwijderen?")
 html = html.replace("Activiteit opgeslagen; dashboard bijgewerkt.", "Activiteit lokaal bijgewerkt; gedeelde opslag wordt gecontroleerd.")
-html = html.replace("</body>", '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./shared-planner.js"></script></body>', 1)
+html = html.replace("</body>", '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./follow-up-editor.js"></script><script src="./shared-planner.js"></script></body>', 1)
 shared=Path('web/shared-planner.js').read_text(encoding='utf-8')
 old="const c={...blank(),...values,status:Number(el('editStatus').value)};"
-new="const c={...cell({id:edit.id},edit.b),...blank(),...values,status:Number(el('editStatus').value)};"
+new="const c={...cell({id:edit.id},edit.b),...blank(),...values,status:Number(el('editStatus').value)};c.followUpDone=DAGFollowUpEditor.read(c.status);"
 if shared.count(old)!=1:raise ValueError('Unexpected shared activity capture handler')
-Path('_site/shared-planner.js').write_text(shared.replace(old,new,1),encoding='utf-8')
+shared=shared.replace(old,new,1)
+old="status:el('editStatus').value,values}"
+new="status:el('editStatus').value,followUpDone:DAGFollowUpEditor.read(Number(el('editStatus').value)),values}"
+if shared.count(old)!=1:raise ValueError('Unexpected activity draft handler')
+shared=shared.replace(old,new,1)
+Path('_site/shared-planner.js').write_text(shared,encoding='utf-8')
+Path('_site/follow-up-editor.js').write_text(Path('web/follow-up-editor.js').read_text(encoding='utf-8'),encoding='utf-8')
 path.write_text(html, encoding="utf-8")
-print("Enabled Supabase sign-in and shared saving; activity extensions are preserved")
+print("Enabled Supabase sign-in and shared saving; activity extensions and follow-up are preserved")
