@@ -3,9 +3,16 @@ import argparse
 import json
 from pathlib import Path
 import re
+import shutil
 from urllib.request import Request, urlopen
 
 CATALOGUE_URL = "https://raw.githubusercontent.com/olafwouters/Curriculum-Atlas/89c0b5422b402b1d6fb7bbd7b12297e1aeebd8d0/data/catalogue-cache/nl-2026.json"
+WEB_DIR = Path(__file__).resolve().parent.parent / "web"
+ICON_TAGS = ('<link rel="icon" href="icons/favicon.ico" sizes="any">'
+             '<link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">'
+             '<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">'
+             '<link rel="manifest" href="manifest.webmanifest">'
+             '<meta name="theme-color" content="#203532">')
 
 
 def programmes(data):
@@ -56,6 +63,14 @@ def main():
     html = html.replace("HANZE · PROJECTWERKRUIMTE · LOKAAL PROTOTYPE", "HANZE · DAG PROJECTWERKRUIMTE")
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
+    icons_ready = (WEB_DIR / "icons" / "icon-512.png").is_file() and (WEB_DIR / "manifest.webmanifest").is_file()
+    if icons_ready:
+        shutil.copytree(WEB_DIR / "icons", output / "icons", dirs_exist_ok=True)
+        shutil.copyfile(WEB_DIR / "manifest.webmanifest", output / "manifest.webmanifest")
+        if 'rel="manifest"' not in html:
+            html = html.replace("</head>", ICON_TAGS + "</head>", 1)
+    else:
+        print("web/icons/icon-512.png not found; building without app icons")
     (output / "index.html").write_text(html, encoding="utf-8")
     (output / ".nojekyll").write_text("", encoding="utf-8")
     (output / "build-info.json").write_text(json.dumps({"programmes": len(rows),
