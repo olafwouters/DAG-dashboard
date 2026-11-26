@@ -14,8 +14,8 @@ if count != 1:
 css = Path("web/header-information.css").read_text(encoding="utf-8")
 css += "\n" + Path("web/workflow.css").read_text(encoding="utf-8")
 html = html.replace("</head>", "<style>" + css + "</style></head>", 1)
-scripts = ("header-information.js", "activity-editor-ui.js", "banner-scene.js", "banner-layout.js")
-deferred = {"banner-scene.js", "banner-layout.js"}
+scripts = ("header-information.js", "activity-editor-ui.js", "banner-scene.js", "banner-layout.js", "login-centre.js")
+deferred = {"banner-scene.js", "banner-layout.js", "login-centre.js"}
 script_tags = ''.join(
     f'<script src="./{name}"' + (' defer' if name in deferred else '') + '></script>'
     for name in scripts

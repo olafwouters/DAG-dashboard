@@ -1,0 +1,7 @@
+/* Presentation only: centre the logged-out login card; sign-in logic untouched. */
+(()=>{
+'use strict';
+const style=document.createElement('style');
+style.textContent='html:not(.dag-authenticated) body>header .atlas-banner .header-information[open] .header-information-content{position:fixed!important;top:50%!important;left:50%!important;right:auto!important;transform:translate(-50%,-50%)!important;width:min(460px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;max-height:calc(100vh - 48px)!important;margin:0!important;box-sizing:border-box;z-index:1000;background:#fffdf9;border:1px solid #e4dcd0;border-radius:22px;box-shadow:0 24px 60px rgba(30,46,40,.28);padding:28px!important;overflow:auto}html:not(.dag-authenticated) body>header .atlas-banner .header-information-content .dag-sync-panel{text-align:center}html:not(.dag-authenticated) body>header .atlas-banner .header-information-content #dagLogin{display:flex!important;flex-direction:column;align-items:stretch;gap:14px;text-align:left}html:not(.dag-authenticated) body>header .atlas-banner .header-information-content #dagLogin label{width:100%}html:not(.dag-authenticated) body>header .atlas-banner .header-information-content #dagLogin input{box-sizing:border-box;width:100%}html:not(.dag-authenticated) body>header .atlas-banner .header-information-content #dagLogin button{align-self:center}';
+document.head.append(style);
+})();
