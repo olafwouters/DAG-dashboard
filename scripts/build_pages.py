@@ -15,6 +15,13 @@ ICON_TAGS = ('<link rel="icon" href="icons/favicon.ico" sizes="any">'
              '<meta name="theme-color" content="#203532">')
 
 
+def find_icons_dir():
+    for path in WEB_DIR.iterdir():
+        if path.is_dir() and path.name.lower() == "icons":
+            return path
+    return None
+
+
 def programmes(data):
     if "programs" in data:
         rows = data["programs"]
@@ -63,9 +70,10 @@ def main():
     html = html.replace("HANZE · PROJECTWERKRUIMTE · LOKAAL PROTOTYPE", "HANZE · DAG PROJECTWERKRUIMTE")
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
-    icons_ready = (WEB_DIR / "icons" / "icon-512.png").is_file() and (WEB_DIR / "manifest.webmanifest").is_file()
+    icons_dir = find_icons_dir()
+    icons_ready = icons_dir is not None and (icons_dir / "icon-512.png").is_file() and (WEB_DIR / "manifest.webmanifest").is_file()
     if icons_ready:
-        shutil.copytree(WEB_DIR / "icons", output / "icons", dirs_exist_ok=True)
+        shutil.copytree(icons_dir, output / "icons", dirs_exist_ok=True)
         shutil.copyfile(WEB_DIR / "manifest.webmanifest", output / "manifest.webmanifest")
         if 'rel="manifest"' not in html:
             html = html.replace("</head>", ICON_TAGS + "</head>", 1)
