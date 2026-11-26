@@ -20,7 +20,7 @@ document.head.append(style);
 const menu=document.querySelector('.header-information');
 if(!menu)return;
 const summary=menu.querySelector(':scope>summary');
-const loggedOut=()=>!document.documentElement.classList.contains('dag-authenticated');
+const loggedOut=()=>{const login=document.getElementById('dagLogin');return !document.documentElement.classList.contains('dag-authenticated')&&!!login&&!login.hidden;};
 let closedOnPurpose=false;
 if(summary)summary.addEventListener('click',()=>{closedOnPurpose=menu.open;});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menu.open)closedOnPurpose=true;},true);
